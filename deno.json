@@ -1,12 +1,18 @@
 {
   "imports": {
+    "@std/fs": "jsr:@std/fs@^1.0.19",
     "hono": "jsr:@hono/hono@^4.10.5"
   },
   "tasks": {
-    "start": "deno run --allow-net main.ts"
+    "start": "deno run --allow-net main.tsx",
+    "dev": "deno run --tunnel --watch --allow-net main.tsx"
   },
   "compilerOptions": {
     "jsx": "precompile",
     "jsxImportSource": "hono/jsx"
+  },
+  "deploy": {
+    "org": "etienne-dldc",
+    "app": "deno-secret-santa"
   }
 }
