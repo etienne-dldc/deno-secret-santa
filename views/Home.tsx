@@ -1,9 +1,14 @@
+import { Card } from "./Card.tsx";
 import { Layout } from "./Layout.tsx";
+import { ProjectForm } from "./ProjectForm.tsx";
 
 export function Home() {
   return (
     <Layout>
-      <h1>Welcome to the Secret Santa App!</h1>
+      <Card>
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Créer un projet</h2>
+        <ProjectForm />
+      </Card>
     </Layout>
   );
 }
