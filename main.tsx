@@ -3,13 +3,15 @@ import { sValidator } from "@hono/standard-validator";
 import { nanoid } from "@sitnik/nanoid";
 import { Hono } from "hono";
 import {
+  addConstraintSchema,
   confirmDrawSchema,
   createProjectSchema,
   createUserSchema,
+  deleteConstraintSchema,
   resultsSchema,
 } from "./logic/schemas.tsx";
-import { shuffle } from "./logic/shuffle.ts";
-import { TAssignment, TProject, TUser } from "./logic/types.ts";
+import { checkConstraints, shuffle } from "./logic/shuffle.ts";
+import { TAssignment, TConstraint, TProject, TUser } from "./logic/types.ts";
 import { AddUser } from "./views/AddUser.tsx";
 import { ConfirmDraw } from "./views/ConfirmDraw.tsx";
 import { Home } from "./views/Home.tsx";
@@ -86,45 +88,141 @@ app.get("/:projectId/tirage-au-sort", async (c) => {
   if (!project.value) {
     return c.html(<NotFound />, 404);
   }
-  return c.html(<ConfirmDraw project={project.value} />);
+  // get users
+  const usersIter = kv.list<TUser>({ prefix: ["project", projectId, "user"] });
+  const users = (await Array.fromAsync(usersIter)).map((entry) => entry.value);
+
+  return c.html(<ConfirmDraw project={project.value} users={users} />);
 });
 
 app.post(
   "/:projectId/tirage-au-sort",
-  sValidator("form", confirmDrawSchema),
   async (c) => {
-    const { password } = c.req.valid("form");
     const projectId = c.req.param("projectId");
     const project = await kv.get<TProject>(["project", projectId]);
     if (!project.value) {
       return c.html(<NotFound />, 404);
     }
-    // Verify password if project has one
-    if (project.value.passwordHash) {
-      if (!password) {
-        return c.html(<ConfirmDraw project={project.value} invalidPassword />);
-      }
-      if (!(await verify(password, project.value.passwordHash))) {
-        return c.html(<ConfirmDraw project={project.value} invalidPassword />);
-      }
-    }
-    // Create assignments
+
     const usersIter = kv.list<TUser>({
       prefix: ["project", projectId, "user"],
     });
     const users = (await Array.fromAsync(usersIter)).map(
       (entry) => entry.value
     );
-    const shuffledUsers = shuffle(users);
-    const assignments: TAssignment[] = [];
-    for (let i = 0; i < users.length; i++) {
-      const fromUser = shuffledUsers[i];
-      const toUser = shuffledUsers[(i + 1) % users.length];
-      assignments.push({ from: fromUser.id, to: toUser.id });
+
+    const formData = await c.req.formData();
+    const action = formData.get("action");
+
+    // Handle adding constraint
+    if (action === "addConstraint") {
+      const left = formData.get("left") as string;
+      const right = formData.get("right") as string;
+      const kind = formData.get("kind") as string;
+
+      // Validate same user
+      if (left === right) {
+        return c.html(
+          <ConfirmDraw
+            project={project.value}
+            users={users}
+            constraintError="Une contrainte ne peut pas avoir la même personne des deux côtés."
+          />
+        );
+      }
+
+      const newConstraint: TConstraint = { left, right, kind: kind as any };
+
+      // Check if constraint already exists
+      const constraints = project.value.constraints || [];
+      const exists = constraints.some(
+        (c) =>
+          c.left === newConstraint.left &&
+          c.right === newConstraint.right &&
+          c.kind === newConstraint.kind
+      );
+
+      if (exists) {
+        return c.html(
+          <ConfirmDraw
+            project={project.value}
+            users={users}
+            constraintError="Cette contrainte existe déjà."
+          />
+        );
+      }
+
+      project.value.constraints = [...constraints, newConstraint];
+      await kv.set(["project", projectId], project.value);
+      return c.redirect(`/${projectId}/tirage-au-sort`);
     }
-    project.value.assignments = assignments;
-    await kv.set(["project", projectId], project.value);
-    return c.redirect(`/${projectId}`);
+
+    // Handle deleting constraint
+    if (action === "deleteConstraint") {
+      const index = parseInt(formData.get("index") as string);
+      const constraints = project.value.constraints || [];
+      constraints.splice(index, 1);
+      project.value.constraints = constraints;
+      await kv.set(["project", projectId], project.value);
+      return c.redirect(`/${projectId}/tirage-au-sort`);
+    }
+
+    // Handle confirm draw
+    if (action === "confirmDraw") {
+      const password = formData.get("password") as string;
+
+      // Verify password if project has one
+      if (project.value.passwordHash) {
+        if (!password) {
+          return c.html(
+            <ConfirmDraw project={project.value} users={users} invalidPassword />
+          );
+        }
+        if (!(await verify(password, project.value.passwordHash))) {
+          return c.html(
+            <ConfirmDraw project={project.value} users={users} invalidPassword />
+          );
+        }
+      }
+
+      // Create assignments with constraint checking
+      const constraints = project.value.constraints || [];
+      const maxAttempts = 10000;
+      let attempts = 0;
+      let validAssignments: TAssignment[] | null = null;
+
+      while (attempts < maxAttempts) {
+        attempts++;
+        const shuffledUsers = shuffle(users);
+        const assignments: TAssignment[] = [];
+        for (let i = 0; i < users.length; i++) {
+          const fromUser = shuffledUsers[i];
+          const toUser = shuffledUsers[(i + 1) % users.length];
+          assignments.push({ from: fromUser.id, to: toUser.id });
+        }
+
+        if (checkConstraints(assignments, constraints)) {
+          validAssignments = assignments;
+          break;
+        }
+      }
+
+      if (!validAssignments) {
+        return c.html(
+          <ConfirmDraw
+            project={project.value}
+            users={users}
+            drawError="Impossible de générer un tirage au sort respectant toutes les contraintes après 10000 tentatives. Veuillez supprimer certaines contraintes."
+          />
+        );
+      }
+
+      project.value.assignments = validAssignments;
+      await kv.set(["project", projectId], project.value);
+      return c.redirect(`/${projectId}`);
+    }
+
+    return c.html(<NotFound />, 404);
   }
 );
 
