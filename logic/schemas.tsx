@@ -39,3 +39,9 @@ export const deleteConstraintSchema = v.object({
   action: v.literal("deleteConstraint"),
   index: v.pipe(v.string(), v.transform(Number)),
 });
+
+export const tirageAuSortSchema = v.variant("action", [
+  confirmDrawSchema,
+  addConstraintSchema,
+  deleteConstraintSchema,
+]);

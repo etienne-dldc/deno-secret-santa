@@ -3,12 +3,10 @@ import { sValidator } from "@hono/standard-validator";
 import { nanoid } from "@sitnik/nanoid";
 import { Hono } from "hono";
 import {
-  addConstraintSchema,
-  confirmDrawSchema,
   createProjectSchema,
   createUserSchema,
-  deleteConstraintSchema,
   resultsSchema,
+  tirageAuSortSchema,
 } from "./logic/schemas.tsx";
 import { checkConstraints, shuffle } from "./logic/shuffle.ts";
 import { TAssignment, TConstraint, TProject, TUser } from "./logic/types.ts";
@@ -97,6 +95,7 @@ app.get("/:projectId/tirage-au-sort", async (c) => {
 
 app.post(
   "/:projectId/tirage-au-sort",
+  sValidator("form", tirageAuSortSchema),
   async (c) => {
     const projectId = c.req.param("projectId");
     const project = await kv.get<TProject>(["project", projectId]);
@@ -111,14 +110,11 @@ app.post(
       (entry) => entry.value
     );
 
-    const formData = await c.req.formData();
-    const action = formData.get("action");
+    const data = c.req.valid("form");
 
     // Handle adding constraint
-    if (action === "addConstraint") {
-      const left = formData.get("left") as string;
-      const right = formData.get("right") as string;
-      const kind = formData.get("kind") as string;
+    if (data.action === "addConstraint") {
+      const { left, right, kind } = data;
 
       // Validate same user
       if (left === right) {
@@ -131,18 +127,29 @@ app.post(
         );
       }
 
-      const newConstraint: TConstraint = { left, right, kind: kind as any };
+      const newConstraint: TConstraint = { left, right, kind };
 
-      // Check if constraint already exists
-      const constraints = project.value.constraints || [];
-      const exists = constraints.some(
-        (c) =>
+      // Check if constraint already exists or conflicts
+      let constraints = project.value.constraints || [];
+
+      // Check for exact duplicate (including order swap for bidirectional)
+      const exactDuplicate = constraints.some((c) => {
+        if (c.kind === newConstraint.kind && newConstraint.kind === "no_gift_exchange") {
+          // For bidirectional, check both orders
+          return (
+            (c.left === newConstraint.left && c.right === newConstraint.right) ||
+            (c.left === newConstraint.right && c.right === newConstraint.left)
+          );
+        }
+        // For directional, check exact match
+        return (
           c.left === newConstraint.left &&
           c.right === newConstraint.right &&
           c.kind === newConstraint.kind
-      );
+        );
+      });
 
-      if (exists) {
+      if (exactDuplicate) {
         return c.html(
           <ConfirmDraw
             project={project.value}
@@ -152,14 +159,43 @@ app.post(
         );
       }
 
+      // Check if there's already a "no_gift_exchange" constraint between these users
+      const hasNoGiftExchange = constraints.some(
+        (c) =>
+          c.kind === "no_gift_exchange" &&
+          ((c.left === newConstraint.left && c.right === newConstraint.right) ||
+           (c.left === newConstraint.right && c.right === newConstraint.left))
+      );
+
+      if (hasNoGiftExchange && newConstraint.kind !== "no_gift_exchange") {
+        return c.html(
+          <ConfirmDraw
+            project={project.value}
+            users={users}
+            constraintError="Ces personnes ont déjà une contrainte \"ne se font pas de cadeau\" qui bloque tous les échanges."
+          />
+        );
+      }
+
+      // If adding "no_gift_exchange", remove any narrower constraints between these users
+      if (newConstraint.kind === "no_gift_exchange") {
+        constraints = constraints.filter(
+          (c) =>
+            !(
+              (c.left === newConstraint.left && c.right === newConstraint.right) ||
+              (c.left === newConstraint.right && c.right === newConstraint.left)
+            )
+        );
+      }
+
       project.value.constraints = [...constraints, newConstraint];
       await kv.set(["project", projectId], project.value);
       return c.redirect(`/${projectId}/tirage-au-sort`);
     }
 
     // Handle deleting constraint
-    if (action === "deleteConstraint") {
-      const index = parseInt(formData.get("index") as string);
+    if (data.action === "deleteConstraint") {
+      const { index } = data;
       const constraints = project.value.constraints || [];
       constraints.splice(index, 1);
       project.value.constraints = constraints;
@@ -168,8 +204,8 @@ app.post(
     }
 
     // Handle confirm draw
-    if (action === "confirmDraw") {
-      const password = formData.get("password") as string;
+    if (data.action === "confirmDraw") {
+      const { password } = data;
 
       // Verify password if project has one
       if (project.value.passwordHash) {
