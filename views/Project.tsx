@@ -28,7 +28,7 @@ export function Project({ project, users }: ProjectProps) {
         {project.assignments === null ? (
           <>
             <Link href={`/${project.id}/nouveau-participant`}>
-              Ajouter un participant
+              Je participe
             </Link>
             <div class="flex flex-col gap-1">
               <RedButton
