@@ -14,13 +14,8 @@ const app = new Hono();
 app.get("/", (c) => c.html(<Home />));
 
 app.post("/", sValidator("form", createProjectSchema), async (c) => {
-  const { name, description } = c.req.valid("form");
-  const newProject: TProject = {
-    id: nanoid(14),
-    name,
-    description,
-    assignments: null,
-  };
+  const { name } = c.req.valid("form");
+  const newProject: TProject = { id: nanoid(14), name, assignments: null };
   await kv.set(["project", newProject.id], newProject);
   return c.redirect(`/${newProject.id}`);
 });

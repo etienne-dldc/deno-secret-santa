@@ -6,12 +6,12 @@ export interface TAssignment {
 export interface TProject {
   id: string;
   name: string;
-  description: string;
   assignments: null | TAssignment[];
 }
 
 export interface TUser {
   id: string;
   name: string;
+  hint: string;
   passwordHash: string;
 }

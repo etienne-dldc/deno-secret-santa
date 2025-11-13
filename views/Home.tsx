@@ -1,6 +1,6 @@
-import { Card } from "./Card.tsx";
-import { Layout } from "./Layout.tsx";
-import { ProjectForm } from "./ProjectForm.tsx";
+import { Card } from "../components/Card.tsx";
+import { Layout } from "../components/Layout.tsx";
+import { ProjectForm } from "../components/ProjectForm.tsx";
 
 export function Home() {
   return (

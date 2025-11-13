@@ -1,6 +1,7 @@
+import { Card } from "../components/Card.tsx";
+import { Layout } from "../components/Layout.tsx";
+import { RedButton } from "../components/RedButton.tsx";
 import { TProject, TUser } from "../logic/types.ts";
-import { Card } from "./Card.tsx";
-import { Layout } from "./Layout.tsx";
 
 interface ProjectProps {
   project: TProject;
@@ -10,14 +11,12 @@ interface ProjectProps {
 export function Project({ project, users }: ProjectProps) {
   return (
     <Layout>
-      <Card>
+      <Card class="flex flex-col gap-4">
         <h1 class="text-3xl font-bold">{project.name}</h1>
-        {project.description && <p class="mt-4">{project.description}</p>}
-      </Card>
-      <Card>
-        <h2 class="text-2xl font-bold mb-4">Users</h2>
         {users.length === 0 ? (
-          <p>No users found for this project.</p>
+          <div class="bg-gray-100 rounded-lg p-4 text-gray-700">
+            <p>Aucun participant n'a encore été ajouté.</p>
+          </div>
         ) : (
           <ul class="list-disc list-inside">
             {users.map((user) => (
@@ -27,12 +26,22 @@ export function Project({ project, users }: ProjectProps) {
             ))}
           </ul>
         )}
+        {project.assignments === null ? (
+          <>
+            <a
+              href={`/${project.id}/nouveau-participant`}
+              class="text-blue-500 hover:text-blue-700 underline"
+            >
+              Ajouter un participant
+            </a>
+            <RedButton href={`/${project.id}/tirage-au-sort`}>
+              Lancer le tirage au sort
+            </RedButton>
+          </>
+        ) : (
+          <div>TODO</div>
+        )}
       </Card>
-      {project.assignments === null ? (
-        <Card>User Form</Card>
-      ) : (
-        <Card>Assignments have been made. Reveal.</Card>
-      )}
     </Layout>
   );
 }
