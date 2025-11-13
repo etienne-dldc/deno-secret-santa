@@ -26,24 +26,22 @@ export function Project({ project, users }: ProjectProps) {
           </ul>
         )}
         {project.assignments === null ? (
-          <>
-            <Link href={`/${project.id}/nouveau-participant`}>
+          <div class="flex flex-col gap-1">
+            <RedButton href={`/${project.id}/nouveau-participant`}>
               Je participe
-            </Link>
-            <div class="flex flex-col gap-1">
-              <RedButton
-                href={`/${project.id}/tirage-au-sort`}
-                disabled={users.length < 2}
-              >
-                Lancer le tirage au sort
-              </RedButton>
-              {users.length < 2 && (
-                <p class="text-sm text-gray-600 text-center">
-                  Il faut au moins 2 participants pour lancer le tirage au sort.
-                </p>
-              )}
-            </div>
-          </>
+            </RedButton>
+            <RedButton
+              href={`/${project.id}/tirage-au-sort`}
+              disabled={users.length < 2}
+            >
+              Lancer le tirage au sort
+            </RedButton>
+            {users.length < 2 && (
+              <p class="text-sm text-gray-600 text-center">
+                Il faut au moins 2 participants pour lancer le tirage au sort.
+              </p>
+            )}
+          </div>
         ) : (
           <div class="flex flex-col gap-2">
             <h2 class="text-xl font-bold">Tirage au sort</h2>
