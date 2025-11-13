@@ -3,6 +3,7 @@ import * as v from "@valibot/valibot";
 export const createProjectSchema = v.object({
   action: v.literal("createProject"),
   name: v.string(),
+  enablePassword: v.optional(v.literal("true")),
   password: v.optional(v.string()),
 });
 

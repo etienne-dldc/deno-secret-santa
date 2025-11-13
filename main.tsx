@@ -27,13 +27,14 @@ const app = new Hono();
 app.get("/", (c) => c.html(<Home />));
 
 app.post("/", sValidator("form", createProjectSchema), async (c) => {
-  const { name, password } = c.req.valid("form");
+  const { name, enablePassword, password } = c.req.valid("form");
   const newProject: TProject = {
     id: nanoid(14),
     name,
     assignments: null,
   };
-  if (password && password.trim() !== "") {
+  // Only set password if checkbox is checked and password is provided
+  if (enablePassword === "true" && password && password.trim() !== "") {
     newProject.passwordHash = await hash(password);
   }
   await kv.set(["project", newProject.id], newProject);
