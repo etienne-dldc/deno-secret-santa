@@ -22,6 +22,12 @@ export function ProjectForm() {
         type="password"
       />
 
+      <div class="text-sm text-gray-600 px-1">
+        <p class="wrap-balance">
+          Ce mot de passe sera necessaire pour lancer le tirage au sort. Laisser vide pour que n'importe qui avec le lien du projet puisse lancer le tirage au sort.
+        </p>
+      </div>
+
       <RedButton type="submit">✨ Créer un projet</RedButton>
     </form>
   );
