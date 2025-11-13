@@ -14,6 +14,14 @@ export function ProjectForm() {
         required
       />
 
+      <TextField
+        id="password"
+        name="password"
+        label="Mot de passe (optionnel)"
+        placeholder="Laisser vide si non souhaité"
+        type="password"
+      />
+
       <RedButton type="submit">✨ Créer un projet</RedButton>
     </form>
   );

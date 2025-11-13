@@ -3,6 +3,7 @@ import { sValidator } from "@hono/standard-validator";
 import { nanoid } from "@sitnik/nanoid";
 import { Hono } from "hono";
 import {
+  confirmDrawSchema,
   createProjectSchema,
   createUserSchema,
   resultsSchema,
@@ -23,8 +24,15 @@ const app = new Hono();
 app.get("/", (c) => c.html(<Home />));
 
 app.post("/", sValidator("form", createProjectSchema), async (c) => {
-  const { name } = c.req.valid("form");
-  const newProject: TProject = { id: nanoid(14), name, assignments: null };
+  const { name, password } = c.req.valid("form");
+  const newProject: TProject = {
+    id: nanoid(14),
+    name,
+    assignments: null,
+  };
+  if (password && password.trim() !== "") {
+    newProject.passwordHash = await hash(password);
+  }
   await kv.set(["project", newProject.id], newProject);
   return c.redirect(`/${newProject.id}`);
 });
@@ -81,26 +89,44 @@ app.get("/:projectId/tirage-au-sort", async (c) => {
   return c.html(<ConfirmDraw project={project.value} />);
 });
 
-app.post("/:projectId/tirage-au-sort", async (c) => {
-  const projectId = c.req.param("projectId");
-  const project = await kv.get<TProject>(["project", projectId]);
-  if (!project.value) {
-    return c.html(<NotFound />, 404);
+app.post(
+  "/:projectId/tirage-au-sort",
+  sValidator("form", confirmDrawSchema),
+  async (c) => {
+    const { password } = c.req.valid("form");
+    const projectId = c.req.param("projectId");
+    const project = await kv.get<TProject>(["project", projectId]);
+    if (!project.value) {
+      return c.html(<NotFound />, 404);
+    }
+    // Verify password if project has one
+    if (project.value.passwordHash) {
+      if (!password) {
+        return c.html(<ConfirmDraw project={project.value} invalidPassword />);
+      }
+      if (!(await verify(password, project.value.passwordHash))) {
+        return c.html(<ConfirmDraw project={project.value} invalidPassword />);
+      }
+    }
+    // Create assignments
+    const usersIter = kv.list<TUser>({
+      prefix: ["project", projectId, "user"],
+    });
+    const users = (await Array.fromAsync(usersIter)).map(
+      (entry) => entry.value
+    );
+    const shuffledUsers = shuffle(users);
+    const assignments: TAssignment[] = [];
+    for (let i = 0; i < users.length; i++) {
+      const fromUser = shuffledUsers[i];
+      const toUser = shuffledUsers[(i + 1) % users.length];
+      assignments.push({ from: fromUser.id, to: toUser.id });
+    }
+    project.value.assignments = assignments;
+    await kv.set(["project", projectId], project.value);
+    return c.redirect(`/${projectId}`);
   }
-  // Create assignments
-  const usersIter = kv.list<TUser>({ prefix: ["project", projectId, "user"] });
-  const users = (await Array.fromAsync(usersIter)).map((entry) => entry.value);
-  const shuffledUsers = shuffle(users);
-  const assignments: TAssignment[] = [];
-  for (let i = 0; i < users.length; i++) {
-    const fromUser = shuffledUsers[i];
-    const toUser = shuffledUsers[(i + 1) % users.length];
-    assignments.push({ from: fromUser.id, to: toUser.id });
-  }
-  project.value.assignments = assignments;
-  await kv.set(["project", projectId], project.value);
-  return c.redirect(`/${projectId}`);
-});
+);
 
 app.get("/:projectId/resultats", async (c) => {
   const projectId = c.req.param("projectId");
