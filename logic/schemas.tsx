@@ -23,3 +23,25 @@ export const resultsSchema = v.object({
   userId: v.string(),
   password: v.string(),
 });
+
+export const addConstraintSchema = v.object({
+  action: v.literal("addConstraint"),
+  left: v.string(),
+  right: v.string(),
+  kind: v.union([
+    v.literal("no_gift_exchange"),
+    v.literal("cannot_give_to"),
+    v.literal("cannot_receive_from"),
+  ]),
+});
+
+export const deleteConstraintSchema = v.object({
+  action: v.literal("deleteConstraint"),
+  index: v.pipe(v.string(), v.transform(Number)),
+});
+
+export const tirageAuSortSchema = v.variant("action", [
+  confirmDrawSchema,
+  addConstraintSchema,
+  deleteConstraintSchema,
+]);

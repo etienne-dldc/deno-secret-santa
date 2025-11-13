@@ -3,11 +3,23 @@ export interface TAssignment {
   to: string;
 }
 
+export type TConstraintKind =
+  | "no_gift_exchange"
+  | "cannot_give_to"
+  | "cannot_receive_from";
+
+export interface TConstraint {
+  left: string;
+  right: string;
+  kind: TConstraintKind;
+}
+
 export interface TProject {
   id: string;
   name: string;
   passwordHash?: string;
   assignments: null | TAssignment[];
+  constraints?: TConstraint[];
 }
 
 export interface TUser {
