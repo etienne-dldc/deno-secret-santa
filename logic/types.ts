@@ -1,6 +1,6 @@
 export interface TAssignment {
-  from: string[];
-  to: string[];
+  from: string;
+  to: string;
 }
 
 export interface TProject {

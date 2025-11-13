@@ -9,8 +9,8 @@
     "tailwindcss": "npm:tailwindcss@^4.1.17"
   },
   "tasks": {
-    "start": "deno run --allow-net --unstable-kv main.tsx",
-    "dev": "deno run --allow-net --unstable-kv --watch main.tsx"
+    "start": "deno run -A --unstable-kv main.tsx",
+    "dev": "deno run -A --unstable-kv --watch main.tsx"
   },
   "compilerOptions": {
     "jsx": "precompile",

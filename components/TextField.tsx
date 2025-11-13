@@ -4,6 +4,7 @@ interface TextFieldProps {
   label: string;
   placeholder?: string;
   required?: boolean;
+  type?: string;
 }
 
 export function TextField({
@@ -12,6 +13,7 @@ export function TextField({
   label,
   placeholder,
   required = false,
+  type = "text",
 }: TextFieldProps) {
   return (
     <div>
@@ -19,7 +21,7 @@ export function TextField({
         {label}
       </label>
       <input
-        type="text"
+        type={type}
         id={id}
         name={name}
         placeholder={placeholder}

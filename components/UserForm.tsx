@@ -28,10 +28,18 @@ export function UserForm() {
         name="password"
         label="Mot de passe"
         placeholder="Entrez votre mot de passe"
+        type="password"
         required
       />
 
-      <RedButton type="submit">✨ Créer un compte</RedButton>
+      <div class="text-sm text-gray-600 px-1">
+        <p class="wrap-balance">
+          ⚠️ En cas de perte, le mot de passe ne pourra pas être récupéré.
+          Conservez-le en lieu sûr.
+        </p>
+      </div>
+
+      <RedButton type="submit">✨ Je participe ! ✨</RedButton>
     </form>
   );
 }

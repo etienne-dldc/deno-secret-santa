@@ -6,7 +6,7 @@ export function Home() {
   return (
     <Layout>
       <Card>
-        <h2 class="text-2xl font-bold text-gray-800 mb-6">Créer un projet</h2>
+        <h1 class="text-3xl font-bold text-gray-800">Créer un projet</h1>
         <ProjectForm />
       </Card>
     </Layout>

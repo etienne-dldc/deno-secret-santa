@@ -14,7 +14,7 @@ export function Layout(props: PropsWithChildren) {
         <div class="max-w-[500px] mx-auto min-h-[100dvh] grid p-2 md:p-4">
           <div class="self-center flex flex-col gap-4">
             <div class="flex flex-col items-center gap-2">
-              <h1 class="text-5xl font-bold text-white mb-2">
+              <h1 class="text-3xl md:text-5xl font-bold text-white mb-2 text-center">
                 <a href="/">🎅 Secret Santa 🎅</a>
               </h1>
             </div>
