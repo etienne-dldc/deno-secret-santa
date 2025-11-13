@@ -1,4 +1,5 @@
 import { PropsWithChildren } from "hono/jsx";
+import { Link } from "./Link.tsx";
 
 export function Layout(props: PropsWithChildren) {
   return (
@@ -25,6 +26,9 @@ export function Layout(props: PropsWithChildren) {
             </div>
             {props.children}
           </div>
+          <footer class="self-end text-center text-white text-sm py-4">
+            Made by <Link href="https://etienne.tech">Etienne</Link> - <Link href="https://github.com/etienne-dldc/deno-secret-santa">Source code</Link>
+          </footer>
         </div>
       </body>
     </html>
