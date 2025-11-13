@@ -7,7 +7,7 @@ export function Layout(props: PropsWithChildren) {
         <meta charset="UTF-8" />
         <link rel="icon" type="image/svg+xml" href="/vite.svg" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Père Noël Secret</title>
+        <title>Secret Santa - Etienne.tech</title>
         <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
         {/* Privacy-friendly analytics by Plausible */}
         <script async src="https://plausible.io/js/pa-LL0zZi6rlFwr9BhSLdTDk.js"></script>
