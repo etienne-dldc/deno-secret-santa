@@ -113,9 +113,48 @@ app.post(
     const { project, users } = result;
     const data = c.req.valid("form");
 
+    // Handle unlock action
+    if (data.action === "unlock") {
+      const { password } = data;
+      
+      // Verify password
+      if (!project.passwordHash || !(await verify(password, project.passwordHash))) {
+        return c.html(
+          <ConfirmDraw
+            project={project}
+            users={users}
+            invalidPassword={true}
+          />
+        );
+      }
+
+      // Password is correct, redirect with password in URL query
+      return c.html(
+        <ConfirmDraw
+          project={project}
+          users={users}
+          unlockedPassword={password}
+        />
+      );
+    }
+
     // Handle adding constraint
     if (data.action === "addConstraint") {
-      const { left, right, kind } = data;
+      const { left, right, kind, password } = data;
+      
+      // Verify password if project is protected
+      if (project.passwordHash) {
+        if (!password || !(await verify(password, project.passwordHash))) {
+          return c.html(
+            <ConfirmDraw
+              project={project}
+              users={users}
+              constraintError="Mot de passe incorrect"
+            />
+          );
+        }
+      }
+
       const addResult = addConstraint(project, { left, right, kind });
 
       if (!addResult.success) {
@@ -124,17 +163,40 @@ app.post(
             project={project}
             users={users}
             constraintError={addResult.error}
+            unlockedPassword={password}
           />
         );
       }
 
       await kv.set(["project", projectId], addResult.updatedProject);
-      return c.redirect(`/${projectId}/tirage-au-sort`);
+      
+      // Preserve unlocked state by passing password
+      return c.html(
+        <ConfirmDraw
+          project={addResult.updatedProject}
+          users={users}
+          unlockedPassword={password}
+        />
+      );
     }
 
     // Handle deleting constraint
     if (data.action === "deleteConstraint") {
-      const { index } = data;
+      const { index, password } = data;
+      
+      // Verify password if project is protected
+      if (project.passwordHash) {
+        if (!password || !(await verify(password, project.passwordHash))) {
+          return c.html(
+            <ConfirmDraw
+              project={project}
+              users={users}
+              constraintError="Mot de passe incorrect"
+            />
+          );
+        }
+      }
+
       const deleteResult = deleteConstraint(project, { index });
 
       if (!deleteResult.success) {
@@ -143,12 +205,21 @@ app.post(
             project={project}
             users={users}
             constraintError={deleteResult.error}
+            unlockedPassword={password}
           />
         );
       }
 
       await kv.set(["project", projectId], deleteResult.updatedProject);
-      return c.redirect(`/${projectId}/tirage-au-sort`);
+      
+      // Preserve unlocked state by passing password
+      return c.html(
+        <ConfirmDraw
+          project={deleteResult.updatedProject}
+          users={users}
+          unlockedPassword={password}
+        />
+      );
     }
 
     // Handle confirm draw
@@ -163,6 +234,7 @@ app.post(
             users={users}
             invalidPassword={drawResult.invalidPassword}
             drawError={drawResult.drawError}
+            unlockedPassword={password}
           />
         );
       }

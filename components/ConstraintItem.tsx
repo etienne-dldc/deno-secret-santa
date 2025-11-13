@@ -4,12 +4,14 @@ interface ConstraintItemProps {
   constraint: TConstraint;
   index: number;
   users: TUser[];
+  password?: string;
 }
 
 export function ConstraintItem({
   constraint,
   index,
   users,
+  password,
 }: ConstraintItemProps) {
   const leftUser = users.find((u) => u.id === constraint.left);
   const rightUser = users.find((u) => u.id === constraint.right);
@@ -57,6 +59,7 @@ export function ConstraintItem({
       <form method="post" class="inline">
         <input type="hidden" name="action" value="deleteConstraint" />
         <input type="hidden" name="index" value={index.toString()} />
+        {password && <input type="hidden" name="password" value={password} />}
         <button
           type="submit"
           class="text-red-600 hover:text-red-800 hover:underline text-sm font-medium transition-all"

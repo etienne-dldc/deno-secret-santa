@@ -3,12 +3,14 @@ import { TUser } from "../logic/types.ts";
 interface ConstraintFormProps {
   users: TUser[];
   constraintError?: string;
+  password?: string;
 }
 
-export function ConstraintForm({ users, constraintError }: ConstraintFormProps) {
+export function ConstraintForm({ users, constraintError, password }: ConstraintFormProps) {
   return (
     <form method="post" class="space-y-3 bg-gray-50 p-4 rounded-lg">
       <input type="hidden" name="action" value="addConstraint" />
+      {password && <input type="hidden" name="password" value={password} />}
       <h3 class="font-semibold text-sm">Ajouter une contrainte</h3>
 
       <div class="space-y-2">
