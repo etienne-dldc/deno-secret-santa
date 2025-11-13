@@ -12,8 +12,7 @@ export function Layout(props: PropsWithChildren) {
         {/* Privacy-friendly analytics by Plausible */}
         <script async src="https://plausible.io/js/pa-LL0zZi6rlFwr9BhSLdTDk.js"></script>
         <script>
-          window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
-          plausible.init()
+          {`window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init()`}
         </script>
       </head>
       <body class="h-full">
