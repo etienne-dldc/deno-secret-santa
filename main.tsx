@@ -172,7 +172,7 @@ app.post(
           <ConfirmDraw
             project={project.value}
             users={users}
-            constraintError="Ces personnes ont déjà une contrainte \"ne se font pas de cadeau\" qui bloque tous les échanges."
+            constraintError={`Ces personnes ont déjà une contrainte "ne se font pas de cadeau" qui bloque tous les échanges.`}
           />
         );
       }
