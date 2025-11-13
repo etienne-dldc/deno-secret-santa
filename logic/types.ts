@@ -6,6 +6,7 @@ export interface TAssignment {
 export interface TProject {
   id: string;
   name: string;
+  passwordHash?: string;
   assignments: null | TAssignment[];
 }
 

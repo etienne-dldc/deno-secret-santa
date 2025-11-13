@@ -56,8 +56,9 @@ deno task dev
 
 1. Visit the homepage
 2. Enter a project name (e.g., "Family Christmas 2025")
-3. Click "Créer un projet" to create your project
-4. Share the project URL with participants
+3. Optionally, enter a password to protect the draw process
+4. Click "Créer un projet" to create your project
+5. Share the project URL with participants
 
 ### Adding Participants
 
@@ -71,8 +72,9 @@ deno task dev
 ### Running the Draw
 
 1. Once you have at least 2 participants, click "Lancer le tirage au sort"
-2. Confirm the draw on the next page
-3. The system will randomly assign each participant to another participant
+2. If you set a project password, enter it on the confirmation page
+3. Confirm the draw
+4. The system will randomly assign each participant to another participant
 
 ### Viewing Assignments
 
