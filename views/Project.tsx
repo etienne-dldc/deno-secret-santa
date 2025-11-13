@@ -25,6 +25,24 @@ export function Project({ project, users }: ProjectProps) {
             ))}
           </ul>
         )}
+        {users.length > 0 && (
+          <div class="flex flex-col gap-2">
+            <h2 class="text-lg font-semibold text-gray-700">
+              Message à partager
+            </h2>
+            {project.assignments === null ? (
+              <ShareableMessage
+                text="Rejoins mon Secret Santa"
+                path={`/${project.id}`}
+              />
+            ) : (
+              <ShareableMessage
+                text="Découvre ton Secret Santa"
+                path={`/${project.id}/resultats`}
+              />
+            )}
+          </div>
+        )}
         {project.assignments === null ? (
           <>
             <Link href={`/${project.id}/nouveau-participant`}>
@@ -71,5 +89,33 @@ function UserListItem({ user }: { user: TUser }) {
       </div>
       <div class="text-gray-900 font-medium">{user.name}</div>
     </li>
+  );
+}
+
+function ShareableMessage({ text, path }: { text: string; path: string }) {
+  const messageId = `shareable-message-${path.replace(/\//g, "-")}`;
+  return (
+    <div class="bg-gray-100 rounded-lg p-4 border border-gray-300">
+      <pre
+        id={messageId}
+        class="text-sm text-gray-800 overflow-x-auto whitespace-pre-wrap break-all"
+      >
+        {text}: <span data-url-path={path}>[Chargement...]</span>
+      </pre>
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
+            (function() {
+              const el = document.getElementById('${messageId}');
+              const span = el.querySelector('[data-url-path]');
+              if (span) {
+                const path = span.getAttribute('data-url-path');
+                span.textContent = window.location.origin + path;
+              }
+            })();
+          `,
+        }}
+      />
+    </div>
   );
 }
