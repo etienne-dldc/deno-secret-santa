@@ -26,8 +26,8 @@ export function ConfirmDraw({
     leftUser: TUser | undefined,
     rightUser: TUser | undefined,
     kind: TConstraintKind
-  ): string => {
-    if (!leftUser || !rightUser) return "";
+  ) => {
+    if (!leftUser || !rightUser) return null;
     
     switch (kind) {
       case "no_gift_exchange":
