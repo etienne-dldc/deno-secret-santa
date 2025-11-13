@@ -13,6 +13,7 @@ interface ConfirmDrawProps {
   invalidPassword?: boolean;
   constraintError?: string;
   drawError?: string;
+  unlockedPassword?: string;
 }
 
 export function ConfirmDraw({
@@ -21,9 +22,45 @@ export function ConfirmDraw({
   invalidPassword,
   constraintError,
   drawError,
+  unlockedPassword,
 }: ConfirmDrawProps) {
   const constraints = project.constraints || [];
+  const isPasswordProtected = !!project.passwordHash;
+  const isUnlocked = isPasswordProtected && !!unlockedPassword;
 
+  // If password protected and not unlocked, show password unlock UI
+  if (isPasswordProtected && !isUnlocked) {
+    return (
+      <Layout>
+        <Card>
+          <h1 class="text-3xl font-bold">Prêt pour le tirage au sort ?</h1>
+          <p class="text-gray-700">
+            Ce projet est protégé par un mot de passe administrateur.
+          </p>
+          <Link href={`/${project.id}`}>
+            &larr; Retour à <em class="font-bold not-italic">{project.name}</em>
+          </Link>
+
+          <form method="post" class="space-y-4">
+            <input type="hidden" name="action" value="unlock" />
+            <TextField
+              id="password"
+              name="password"
+              label="Mot de passe administrateur"
+              type="password"
+              required
+            />
+            {invalidPassword && (
+              <p class="text-red-600 text-sm">Mot de passe incorrect</p>
+            )}
+            <RedButton type="submit">🔓 Déverrouiller</RedButton>
+          </form>
+        </Card>
+      </Layout>
+    );
+  }
+
+  // Show full UI (unlocked or no password)
   return (
     <Layout>
       <Card>
@@ -50,31 +87,25 @@ export function ConfirmDraw({
                   constraint={constraint}
                   index={index}
                   users={users}
+                  password={unlockedPassword}
                 />
               ))}
             </ul>
           )}
 
           {/* Add Constraint Form */}
-          <ConstraintForm users={users} constraintError={constraintError} />
+          <ConstraintForm 
+            users={users} 
+            constraintError={constraintError}
+            password={unlockedPassword}
+          />
         </div>
 
         {/* Draw Confirmation */}
         <form method="post" class="space-y-4">
           <input type="hidden" name="action" value="confirmDraw" />
-          {project.passwordHash && (
-            <>
-              <TextField
-                id="password"
-                name="password"
-                label="Mot de passe du projet"
-                type="password"
-                required
-              />
-              {invalidPassword && (
-                <p class="text-red-600 text-sm">Mot de passe incorrect</p>
-              )}
-            </>
+          {isPasswordProtected && (
+            <input type="hidden" name="password" value={unlockedPassword} />
           )}
           {drawError && (
             <div class="bg-red-50 border border-red-200 rounded-lg p-4">

@@ -3,6 +3,7 @@ import * as v from "@valibot/valibot";
 export const createProjectSchema = v.object({
   action: v.literal("createProject"),
   name: v.string(),
+  enablePassword: v.optional(v.literal("true")),
   password: v.optional(v.string()),
 });
 
@@ -33,15 +34,23 @@ export const addConstraintSchema = v.object({
     v.literal("cannot_give_to"),
     v.literal("cannot_receive_from"),
   ]),
+  password: v.optional(v.string()),
 });
 
 export const deleteConstraintSchema = v.object({
   action: v.literal("deleteConstraint"),
   index: v.pipe(v.string(), v.transform(Number)),
+  password: v.optional(v.string()),
+});
+
+export const unlockSchema = v.object({
+  action: v.literal("unlock"),
+  password: v.string(),
 });
 
 export const tirageAuSortSchema = v.variant("action", [
   confirmDrawSchema,
   addConstraintSchema,
   deleteConstraintSchema,
+  unlockSchema,
 ]);
