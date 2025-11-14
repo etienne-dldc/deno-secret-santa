@@ -10,6 +10,7 @@ import {
   adminSchema,
   createProjectSchema,
   createUserSchema,
+  participantEditSchema,
   resultsSchema,
   tirageAuSortSchema,
 } from "./logic/schemas.tsx";
@@ -19,6 +20,7 @@ import { Admin } from "./views/Admin.tsx";
 import { ConfirmDraw } from "./views/ConfirmDraw.tsx";
 import { Home } from "./views/Home.tsx";
 import { NotFound } from "./views/NotFound.tsx";
+import { ParticipantEdit } from "./views/ParticipantEdit.tsx";
 import { Project } from "./views/Project.tsx";
 import { Results } from "./views/Results.tsx";
 
@@ -331,6 +333,178 @@ app.post(
         assignment={{ from: user, to: toUser }}
       />
     );
+  }
+);
+
+app.get("/:projectId/participant/:participantId", async (c) => {
+  const projectId = c.req.param("projectId");
+  const participantId = c.req.param("participantId");
+  
+  const result = await getProjectWithUsers(kv, projectId);
+  if (!result) {
+    return c.html(<NotFound />, 404);
+  }
+
+  const user = result.users.find((u) => u.id === participantId);
+  if (!user) {
+    return c.html(<NotFound />, 404);
+  }
+
+  return c.html(<ParticipantEdit project={result.project} user={user} />);
+});
+
+app.post(
+  "/:projectId/participant/:participantId",
+  sValidator("form", participantEditSchema),
+  async (c) => {
+    const projectId = c.req.param("projectId");
+    const participantId = c.req.param("participantId");
+    const data = c.req.valid("form");
+
+    const result = await getProjectWithUsers(kv, projectId);
+    if (!result) {
+      return c.html(<NotFound />, 404);
+    }
+
+    const { project, users } = result;
+    const user = users.find((u) => u.id === participantId);
+    if (!user) {
+      return c.html(<NotFound />, 404);
+    }
+
+    // Handle unlock action
+    if (data.action === "unlockParticipant") {
+      const { password } = data;
+      const adminPassword = Deno.env.get("ADMIN_PASSWORD");
+
+      // Check three password options:
+      // 1. User's own password
+      // 2. Project password (if set)
+      // 3. Admin password (if set)
+      let isValid = false;
+
+      // Check user password
+      if (await verify(password, user.passwordHash)) {
+        isValid = true;
+      }
+
+      // Check project password if it exists
+      if (!isValid && project.passwordHash && await verify(password, project.passwordHash)) {
+        isValid = true;
+      }
+
+      // Check admin password if it exists
+      if (!isValid && adminPassword && password === adminPassword) {
+        isValid = true;
+      }
+
+      if (!isValid) {
+        return c.html(
+          <ParticipantEdit
+            project={project}
+            user={user}
+            invalidPassword={true}
+          />
+        );
+      }
+
+      // Password is correct, redirect with password in URL query
+      return c.html(
+        <ParticipantEdit
+          project={project}
+          user={user}
+          unlockedPassword={password}
+        />
+      );
+    }
+
+    // For all other actions, verify password first
+    const { password } = data;
+    const adminPassword = Deno.env.get("ADMIN_PASSWORD");
+    let isValid = false;
+
+    // Check user password
+    if (await verify(password, user.passwordHash)) {
+      isValid = true;
+    }
+
+    // Check project password if it exists
+    if (!isValid && project.passwordHash && await verify(password, project.passwordHash)) {
+      isValid = true;
+    }
+
+    // Check admin password if it exists
+    if (!isValid && adminPassword && password === adminPassword) {
+      isValid = true;
+    }
+
+    if (!isValid) {
+      return c.html(
+        <ParticipantEdit
+          project={project}
+          user={user}
+          invalidPassword={true}
+        />
+      );
+    }
+
+    // Handle update hint
+    if (data.action === "updateHint") {
+      const { hint } = data;
+      const updatedUser: TUser = {
+        ...user,
+        hint,
+      };
+      await kv.set(["project", projectId, "user", participantId], updatedUser);
+      
+      return c.html(
+        <ParticipantEdit
+          project={project}
+          user={updatedUser}
+          unlockedPassword={password}
+          updateSuccess="Indice mis à jour avec succès"
+        />
+      );
+    }
+
+    // Handle update password
+    if (data.action === "updatePassword") {
+      const { newPassword } = data;
+      const updatedUser: TUser = {
+        ...user,
+        passwordHash: await hash(newPassword),
+      };
+      await kv.set(["project", projectId, "user", participantId], updatedUser);
+      
+      return c.html(
+        <ParticipantEdit
+          project={project}
+          user={updatedUser}
+          unlockedPassword={newPassword}
+          updateSuccess="Mot de passe mis à jour avec succès"
+        />
+      );
+    }
+
+    // Handle delete user
+    if (data.action === "deleteUser") {
+      // Check if draw has already been done
+      if (project.assignments !== null) {
+        return c.html(
+          <ParticipantEdit
+            project={project}
+            user={user}
+            unlockedPassword={password}
+            updateSuccess="Impossible de supprimer un participant après le tirage au sort."
+          />
+        );
+      }
+
+      await kv.delete(["project", projectId, "user", participantId]);
+      return c.redirect(`/${projectId}`);
+    }
+
+    return c.html(<NotFound />, 404);
   }
 );
 

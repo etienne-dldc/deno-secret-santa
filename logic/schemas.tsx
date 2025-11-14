@@ -59,3 +59,32 @@ export const adminSchema = v.object({
   action: v.literal("adminLogin"),
   password: v.string(),
 });
+
+export const unlockParticipantSchema = v.object({
+  action: v.literal("unlockParticipant"),
+  password: v.string(),
+});
+
+export const updateHintSchema = v.object({
+  action: v.literal("updateHint"),
+  hint: v.string(),
+  password: v.string(),
+});
+
+export const updatePasswordSchema = v.object({
+  action: v.literal("updatePassword"),
+  newPassword: v.string(),
+  password: v.string(),
+});
+
+export const deleteUserSchema = v.object({
+  action: v.literal("deleteUser"),
+  password: v.string(),
+});
+
+export const participantEditSchema = v.variant("action", [
+  unlockParticipantSchema,
+  updateHintSchema,
+  updatePasswordSchema,
+  deleteUserSchema,
+]);

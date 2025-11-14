@@ -4,6 +4,7 @@ interface TextareaFieldProps {
   label: string;
   placeholder?: string;
   rows?: number;
+  value?: string;
 }
 
 export function TextareaField({
@@ -12,6 +13,7 @@ export function TextareaField({
   label,
   placeholder,
   rows = 4,
+  value,
 }: TextareaFieldProps) {
   return (
     <div>
@@ -24,7 +26,7 @@ export function TextareaField({
         placeholder={placeholder}
         rows={rows}
         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition-all resize-none"
-      />
+      >{value}</textarea>
     </div>
   );
 }
