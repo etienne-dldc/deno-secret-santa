@@ -73,7 +73,7 @@ export function Results({
               </p>
             )}
 
-            <RedButton type="submit">Voir mon résultat</RedButton>
+            <RedButton type="submit">🎁 Voir mon résultat</RedButton>
           </form>
         )}
       </Card>
