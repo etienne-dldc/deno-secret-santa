@@ -14,7 +14,7 @@ export function RedButton({
   disabled,
 }: RedButtonProps) {
   const className =
-    "w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold py-3 px-4 rounded-lg transition-all shadow-md hover:shadow-lg cursor-pointer" +
+    "w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold py-3 px-4 rounded-lg transition-all shadow-md hover:shadow-lg cursor-pointer text-center" +
     (disabled ? " opacity-50 cursor-not-allowed" : "");
 
   if (href) {

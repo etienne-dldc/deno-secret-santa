@@ -112,7 +112,7 @@ export function ConfirmDraw({
               <p class="text-red-600 text-sm">{drawError}</p>
             </div>
           )}
-          <RedButton type="submit">Confirmer le tirage au sort</RedButton>
+          <RedButton type="submit">🎲 Confirmer le tirage au sort</RedButton>
         </form>
       </Card>
     </Layout>
