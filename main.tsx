@@ -26,6 +26,31 @@ import { Results } from "./views/Results.tsx";
 
 const kv = await Deno.openKv();
 
+// Helper function to verify participant password (user password OR project password OR admin password)
+async function verifyParticipantPassword(
+  password: string,
+  user: TUser,
+  project: TProject
+): Promise<boolean> {
+  // Check user password
+  if (await verify(password, user.passwordHash)) {
+    return true;
+  }
+
+  // Check project password if it exists
+  if (project.passwordHash && await verify(password, project.passwordHash)) {
+    return true;
+  }
+
+  // Check admin password if it exists
+  const adminPassword = Deno.env.get("ADMIN_PASSWORD");
+  if (adminPassword && password === adminPassword) {
+    return true;
+  }
+
+  return false;
+}
+
 const app = new Hono();
 
 app.get("/", (c) => c.html(<Home />));
@@ -375,28 +400,8 @@ app.post(
     // Handle unlock action
     if (data.action === "unlockParticipant") {
       const { password } = data;
-      const adminPassword = Deno.env.get("ADMIN_PASSWORD");
 
-      // Check three password options:
-      // 1. User's own password
-      // 2. Project password (if set)
-      // 3. Admin password (if set)
-      let isValid = false;
-
-      // Check user password
-      if (await verify(password, user.passwordHash)) {
-        isValid = true;
-      }
-
-      // Check project password if it exists
-      if (!isValid && project.passwordHash && await verify(password, project.passwordHash)) {
-        isValid = true;
-      }
-
-      // Check admin password if it exists
-      if (!isValid && adminPassword && password === adminPassword) {
-        isValid = true;
-      }
+      const isValid = await verifyParticipantPassword(password, user, project);
 
       if (!isValid) {
         return c.html(
@@ -420,23 +425,7 @@ app.post(
 
     // For all other actions, verify password first
     const { password } = data;
-    const adminPassword = Deno.env.get("ADMIN_PASSWORD");
-    let isValid = false;
-
-    // Check user password
-    if (await verify(password, user.passwordHash)) {
-      isValid = true;
-    }
-
-    // Check project password if it exists
-    if (!isValid && project.passwordHash && await verify(password, project.passwordHash)) {
-      isValid = true;
-    }
-
-    // Check admin password if it exists
-    if (!isValid && adminPassword && password === adminPassword) {
-      isValid = true;
-    }
+    const isValid = await verifyParticipantPassword(password, user, project);
 
     if (!isValid) {
       return c.html(
