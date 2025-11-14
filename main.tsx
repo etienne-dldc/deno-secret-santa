@@ -43,6 +43,33 @@ app.post("/", sValidator("form", createProjectSchema), async (c) => {
   return c.redirect(`/${newProject.id}`);
 });
 
+app.get("/admin", (c) => {
+  return c.html(<Admin />);
+});
+
+app.post("/admin", sValidator("form", adminSchema), async (c) => {
+  const { password } = c.req.valid("form");
+  const adminPassword = Deno.env.get("ADMIN_PASSWORD");
+  
+  // If env variable is missing or password doesn't match, show invalid password
+  if (!adminPassword || password !== adminPassword) {
+    return c.html(<Admin invalidPassword={true} />);
+  }
+  
+  // Fetch all projects from KV
+  const projects: TProject[] = [];
+  const entries = kv.list<TProject>({ prefix: ["project"] });
+  
+  for await (const entry of entries) {
+    // Only include top-level project entries, not nested user entries
+    if (entry.key.length === 2) {
+      projects.push(entry.value);
+    }
+  }
+  
+  return c.html(<Admin projects={projects} />);
+});
+
 app.get("/:projectId", async (c) => {
   const projectId = c.req.param("projectId");
   const result = await getProjectWithUsers(kv, projectId);
@@ -298,33 +325,6 @@ app.post(
     );
   }
 );
-
-app.get("/admin", (c) => {
-  return c.html(<Admin />);
-});
-
-app.post("/admin", sValidator("form", adminSchema), async (c) => {
-  const { password } = c.req.valid("form");
-  const adminPassword = Deno.env.get("ADMIN_PASSWORD");
-  
-  // If env variable is missing or password doesn't match, show invalid password
-  if (!adminPassword || password !== adminPassword) {
-    return c.html(<Admin invalidPassword={true} />);
-  }
-  
-  // Fetch all projects from KV
-  const projects: TProject[] = [];
-  const entries = kv.list<TProject>({ prefix: ["project"] });
-  
-  for await (const entry of entries) {
-    // Only include top-level project entries, not nested user entries
-    if (entry.key.length === 2) {
-      projects.push(entry.value);
-    }
-  }
-  
-  return c.html(<Admin projects={projects} />);
-});
 
 app.notFound((c) => c.html(<NotFound />, 404));
 
