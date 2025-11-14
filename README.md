@@ -22,6 +22,59 @@ A simple web application for organizing Secret Santa gift exchanges, built with 
     * Participants can return to the app's project page.
     * They enter the **Personal Password** they used during registration to privately view **who they are buying a gift for.**
 
+## Screenshots
+
+<table width="100%">
+  <tr>
+    <td align="center" width="50%">
+      <a href="./screenshots/01-create-project.png"><img src="./screenshots/01-create-project.png" alt="Step 1: Create Project" width="100%"></a>
+      <br>
+      <strong>1. Create Project</strong>
+    </td>
+    <td align="center" width="50%">
+      <a href="./screenshots/02-add-participant.png"><img src="./screenshots/02-add-participant.png" alt="Step 2: Add Participant" width="100%"></a>
+      <br>
+      <strong>2. Add Participant</strong>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <a href="./screenshots/03-participants-list.png"><img src="./screenshots/03-participants-list.png" alt="Step 3: Participants List" width="100%"></a>
+      <br>
+      <strong>3. Participants List</strong>
+    </td>
+    <td align="center" width="50%">
+      <a href="./screenshots/04-locked.png"><img src="./screenshots/04-locked.png" alt="Step 4: Locked State" width="100%"></a>
+      <br>
+      <strong>4. Locked State</strong>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <a href="./screenshots/05-constraints.png"><img src="./screenshots/05-constraints.png" alt="Step 5: Define Constraints" width="100%"></a>
+      <br>
+      <strong>5. Define Constraints</strong>
+    </td>
+    <td align="center" width="50%">
+      <a href="./screenshots/06-draw-done.png"><img src="./screenshots/06-draw-done.png" alt="Step 6: Draw Done" width="100%"></a>
+      <br>
+      <strong>6. Draw Done</strong>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <a href="./screenshots/07-results-lock.png"><img src="./screenshots/07-results-lock.png" alt="Step 7: Results Lock" width="100%"></a>
+      <br>
+      <strong>7. Results Lock</strong>
+    </td>
+    <td align="center" width="50%">
+      <a href="./screenshots/08-results.png"><img src="./screenshots/08-results.png" alt="Step 8: Final Results" width="100%"></a>
+      <br>
+      <strong>8. Final Results</strong>
+    </td>
+  </tr>
+</table>
+
 ## 🛠️ Technology Stack
 
 - **[Deno](https://deno.land/)**: Modern JavaScript/TypeScript runtime
