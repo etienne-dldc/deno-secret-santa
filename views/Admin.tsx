@@ -60,6 +60,17 @@ export function Admin({ projects, invalidPassword }: AdminProps) {
                     <div class="text-sm text-gray-600">
                       ID: <Link href={`/${project.id}`}>{project.id}</Link>
                     </div>
+                    {project.createdAt && (
+                      <div class="text-xs text-gray-500">
+                        Créé le: {new Date(project.createdAt).toLocaleString("fr-FR", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit"
+                        })}
+                      </div>
+                    )}
                   </li>
                 ))}
               </ul>

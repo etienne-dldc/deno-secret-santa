@@ -6,6 +6,40 @@ import { confirmDraw } from "./confirmDraw.ts";
 import { deleteConstraint } from "./deleteConstraint.ts";
 import { TProject, TUser } from "./types.ts";
 
+// Test for backward compatibility - projects without createdAt should still work
+Deno.test("Project - works without createdAt (backward compatibility)", () => {
+  const project: TProject = {
+    id: "test",
+    name: "Test Project",
+    assignments: null,
+    // No createdAt field
+  };
+
+  // Should be able to add constraints without issues
+  const result = addConstraint(project, {
+    left: "user1",
+    right: "user2",
+    kind: "no_gift_exchange",
+  });
+
+  assertEquals(result.success, true);
+  assertEquals(result.updatedProject?.constraints?.length, 1);
+});
+
+// Test that new projects can have createdAt
+Deno.test("Project - can include createdAt timestamp", () => {
+  const now = Date.now();
+  const project: TProject = {
+    id: "test",
+    name: "Test Project",
+    assignments: null,
+    createdAt: now,
+  };
+
+  assertEquals(project.createdAt, now);
+  assertEquals(typeof project.createdAt, "number");
+});
+
 Deno.test("addConstraint - prevents adding constraints after draw", () => {
   const project: TProject = {
     id: "test",
