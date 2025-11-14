@@ -54,3 +54,8 @@ export const tirageAuSortSchema = v.variant("action", [
   deleteConstraintSchema,
   unlockSchema,
 ]);
+
+export const adminSchema = v.object({
+  action: v.literal("adminLogin"),
+  password: v.string(),
+});

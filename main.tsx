@@ -7,6 +7,7 @@ import { confirmDraw } from "./logic/confirmDraw.ts";
 import { deleteConstraint } from "./logic/deleteConstraint.ts";
 import { getProjectWithUsers } from "./logic/getProjectWithUsers.ts";
 import {
+  adminSchema,
   createProjectSchema,
   createUserSchema,
   resultsSchema,
@@ -14,6 +15,7 @@ import {
 } from "./logic/schemas.tsx";
 import { TProject, TUser } from "./logic/types.ts";
 import { AddUser } from "./views/AddUser.tsx";
+import { Admin } from "./views/Admin.tsx";
 import { ConfirmDraw } from "./views/ConfirmDraw.tsx";
 import { Home } from "./views/Home.tsx";
 import { NotFound } from "./views/NotFound.tsx";
@@ -39,6 +41,33 @@ app.post("/", sValidator("form", createProjectSchema), async (c) => {
   }
   await kv.set(["project", newProject.id], newProject);
   return c.redirect(`/${newProject.id}`);
+});
+
+app.get("/admin", (c) => {
+  return c.html(<Admin />);
+});
+
+app.post("/admin", sValidator("form", adminSchema), async (c) => {
+  const { password } = c.req.valid("form");
+  const adminPassword = Deno.env.get("ADMIN_PASSWORD");
+  
+  // If env variable is missing or password doesn't match, show invalid password
+  if (!adminPassword || password !== adminPassword) {
+    return c.html(<Admin invalidPassword={true} />);
+  }
+  
+  // Fetch all projects from KV
+  const projects: TProject[] = [];
+  const entries = kv.list<TProject>({ prefix: ["project"] });
+  
+  for await (const entry of entries) {
+    // Only include top-level project entries, not nested user entries
+    if (entry.key.length === 2) {
+      projects.push(entry.value);
+    }
+  }
+  
+  return c.html(<Admin projects={projects} />);
 });
 
 app.get("/:projectId", async (c) => {
