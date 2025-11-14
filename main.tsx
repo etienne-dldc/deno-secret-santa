@@ -495,7 +495,7 @@ app.post(
             project={project}
             user={user}
             unlockedPassword={password}
-            updateSuccess="Impossible de supprimer un participant après le tirage au sort."
+            error="Impossible de supprimer un participant après le tirage au sort."
           />
         );
       }

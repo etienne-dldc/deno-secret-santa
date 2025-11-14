@@ -12,6 +12,7 @@ interface ParticipantEditProps {
   invalidPassword?: boolean;
   unlockedPassword?: string;
   updateSuccess?: string;
+  error?: string;
 }
 
 export function ParticipantEdit({
@@ -20,6 +21,7 @@ export function ParticipantEdit({
   invalidPassword,
   unlockedPassword,
   updateSuccess,
+  error,
 }: ParticipantEditProps) {
   const isPasswordProtected = !!project.passwordHash || true; // Always protected by user password
   const isUnlocked = !!unlockedPassword;
@@ -72,6 +74,12 @@ export function ParticipantEdit({
         {updateSuccess && (
           <div class="bg-green-50 border border-green-200 rounded-lg p-4">
             <p class="text-green-600 text-sm">{updateSuccess}</p>
+          </div>
+        )}
+
+        {error && (
+          <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+            <p class="text-red-600 text-sm">{error}</p>
           </div>
         )}
 
