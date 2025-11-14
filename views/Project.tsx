@@ -48,7 +48,9 @@ export function Project({ project, users }: ProjectProps) {
           <div class="flex flex-col gap-2">
             <h2 class="text-xl font-bold">Tirage au sort</h2>
             <p>Le tirage au sort a déjà été effectué pour ce projet.</p>
-            <Link href={`/${project.id}/resultats`}>Voir les résultats</Link>
+            <RedButton href={`/${project.id}/resultats`}>
+              Voir les résultats
+            </RedButton>
           </div>
         )}
       </Card>

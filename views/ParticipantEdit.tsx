@@ -33,6 +33,9 @@ export function ParticipantEdit({
         <Card>
           <h1 class="text-3xl font-bold">Modifier le profil</h1>
           <p class="text-gray-700">
+            Profil de <strong>{user.name}</strong>
+          </p>
+          <p class="text-gray-700">
             Cette page est protégée. Veuillez entrer votre mot de passe pour
             continuer.
           </p>
@@ -125,22 +128,24 @@ export function ParticipantEdit({
         </div>
 
         {/* Delete User Form */}
-        <div class="space-y-4">
-          <h2 class="text-xl font-bold text-red-600">Supprimer le participant</h2>
-          <p class="text-gray-700 text-sm">
-            ⚠️ Cette action est irréversible. Le participant sera définitivement
-            supprimé du projet.
-          </p>
-          <form
-            method="post"
-            class="space-y-4"
-            onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce participant ?');"
-          >
-            <input type="hidden" name="action" value="deleteUser" />
-            <input type="hidden" name="password" value={unlockedPassword} />
-            <RedButton type="submit">🗑️ Supprimer le participant</RedButton>
-          </form>
-        </div>
+        {project.assignments === null && (
+          <div class="space-y-4">
+            <h2 class="text-xl font-bold text-red-600">Supprimer le participant</h2>
+            <p class="text-gray-700 text-sm">
+              ⚠️ Cette action est irréversible. Le participant sera définitivement
+              supprimé du projet.
+            </p>
+            <form
+              method="post"
+              class="space-y-4"
+              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce participant ?');"
+            >
+              <input type="hidden" name="action" value="deleteUser" />
+              <input type="hidden" name="password" value={unlockedPassword} />
+              <RedButton type="submit">🗑️ Supprimer le participant</RedButton>
+            </form>
+          </div>
+        )}
       </Card>
     </Layout>
   );
