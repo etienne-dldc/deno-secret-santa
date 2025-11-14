@@ -34,6 +34,7 @@ app.post("/", sValidator("form", createProjectSchema), async (c) => {
     id: nanoid(14),
     name,
     assignments: null,
+    createdAt: Date.now(),
   };
   // Only set password if checkbox is checked and password is provided
   if (enablePassword === "true" && password && password.trim() !== "") {
@@ -66,6 +67,13 @@ app.post("/admin", sValidator("form", adminSchema), async (c) => {
       projects.push(entry.value);
     }
   }
+  
+  // Sort projects by createdAt (newest first), handling projects without createdAt
+  projects.sort((a, b) => {
+    const aTime = a.createdAt ?? 0;
+    const bTime = b.createdAt ?? 0;
+    return bTime - aTime;
+  });
   
   return c.html(<Admin projects={projects} />);
 });

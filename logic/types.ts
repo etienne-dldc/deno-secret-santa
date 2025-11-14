@@ -20,6 +20,7 @@ export interface TProject {
   passwordHash?: string;
   assignments: null | TAssignment[];
   constraints?: TConstraint[];
+  createdAt?: number;
 }
 
 export interface TUser {
