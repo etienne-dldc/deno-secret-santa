@@ -21,7 +21,7 @@ export function Project({ project, users }: ProjectProps) {
         ) : (
           <ul class="flex flex-col gap-2">
             {users.map((user) => (
-              <UserListItem user={user} />
+              <UserListItem user={user} projectId={project.id} />
             ))}
           </ul>
         )}
@@ -48,7 +48,9 @@ export function Project({ project, users }: ProjectProps) {
           <div class="flex flex-col gap-2">
             <h2 class="text-xl font-bold">Tirage au sort</h2>
             <p>Le tirage au sort a déjà été effectué pour ce projet.</p>
-            <Link href={`/${project.id}/resultats`}>Voir les résultats</Link>
+            <RedButton href={`/${project.id}/resultats`}>
+              Voir les résultats
+            </RedButton>
           </div>
         )}
       </Card>
@@ -56,7 +58,7 @@ export function Project({ project, users }: ProjectProps) {
   );
 }
 
-function UserListItem({ user }: { user: TUser }) {
+function UserListItem({ user, projectId }: { user: TUser; projectId: string }) {
   const initials = user.name
     .split(" ")
     .map((n) => n[0])
@@ -69,7 +71,12 @@ function UserListItem({ user }: { user: TUser }) {
       <div class="w-8 h-8 flex items-center justify-center rounded-full bg-blue-100 text-blue-700 font-semibold">
         {initials}
       </div>
-      <div class="text-gray-900 font-medium">{user.name}</div>
+      <a
+        href={`/${projectId}/participant/${user.id}`}
+        class="text-gray-900 font-medium hover:text-red-600 transition-colors"
+      >
+        {user.name}
+      </a>
     </li>
   );
 }
