@@ -1,17 +1,26 @@
 # 🎅 Secret Santa 🎅
 
-A modern, privacy-focused web application for organizing Secret Santa gift exchanges, built with Deno and Hono.
+A simple web application for organizing Secret Santa gift exchanges, built with Deno and Hono.
 
-## ✨ Features
+## ✨ How to use
 
-- **Easy Project Creation**: Create a Secret Santa project with just a name
-- **Participant Management**: Add participants with names, hints for gift ideas, and secure passwords
-- **Random Assignment**: Automatically generate random gift assignments with the click of a button
-- **Secure Results**: Participants can securely view their assigned recipient using their password
-- **Privacy-First**: Each participant only sees who they need to buy a gift for
-- **No Email Required**: Simple password-based authentication without the need for email addresses
-- **Beautiful UI**: Clean, responsive interface with Tailwind CSS
-- **Persistent Storage**: Uses Deno KV for reliable data storage
+1.  **🎁 Set up your Project:**
+    * **Create a new project** by choosing a **Name** (e.g., "Office Party 2025").
+    * *Optional:* Add an **Admin Password** to secure settings and the final draw.
+
+2.  **🔗 Invite Participants:**
+    * **Share the unique project link** with everyone.
+    * Participants register using their **Name** and a **Personal Password** (No email needed!).
+
+3.  **🛡️ Define Rules (If Needed):**
+    * *Optional:* As the admin, return to the project to set up **Drawing Constraints** (e.g., preventing specific people or couples from drawing each other).
+
+4.  **🎉 Run the Draw:**
+    * Once registration is complete, the admin **runs the draw**. The assignments are now locked in and secret.
+
+5.  **👀 Reveal the Recipient:**
+    * Participants can return to the app's project page.
+    * They enter the **Personal Password** they used during registration to privately view **who they are buying a gift for.**
 
 ## 🛠️ Technology Stack
 
@@ -24,7 +33,7 @@ A modern, privacy-focused web application for organizing Secret Santa gift excha
 
 ## 📋 Prerequisites
 
-- [Deno](https://deno.land/) 1.x or higher installed on your system
+- [Deno](https://deno.land/)
 
 ## 🚀 Getting Started
 
@@ -49,38 +58,6 @@ For development with hot-reload:
 ```bash
 deno task dev
 ```
-
-## 📖 Usage Guide
-
-### Creating a Secret Santa Project
-
-1. Visit the homepage
-2. Enter a project name (e.g., "Family Christmas 2025")
-3. Optionally, enter a password to protect the draw process
-4. Click "Créer un projet" to create your project
-5. Share the project URL with participants
-
-### Adding Participants
-
-1. On the project page, click "Ajouter un participant"
-2. Fill in the participant information:
-   - **Name**: The participant's name
-   - **Hint**: A hint about what gifts they'd like
-   - **Password**: A secure password the participant will use to view their assignment
-3. Submit the form
-
-### Running the Draw
-
-1. Once you have at least 2 participants, click "Lancer le tirage au sort"
-2. If you set a project password, enter it on the confirmation page
-3. Confirm the draw
-4. The system will randomly assign each participant to another participant
-
-### Viewing Assignments
-
-1. Navigate to the results page
-2. Each participant selects their name and enters their password
-3. They will see who they need to buy a gift for, along with that person's gift hints
 
 ## 🔒 Security & Privacy
 
@@ -107,28 +84,6 @@ The project includes deployment configuration in `deno.json`:
 }
 ```
 
-## 📁 Project Structure
-
-```
-.
-├── components/      # Reusable UI components
-│   ├── Card.tsx
-│   ├── Layout.tsx
-│   ├── ProjectForm.tsx
-│   └── ...
-├── logic/          # Business logic and types
-│   ├── types.ts
-│   ├── shuffle.ts
-│   └── schemas.tsx
-├── views/          # Page views
-│   ├── Home.tsx
-│   ├── Project.tsx
-│   ├── Results.tsx
-│   └── ...
-├── main.tsx        # Application entry point
-└── deno.json       # Deno configuration
-```
-
 ## 🤝 Contributing
 
 Contributions are welcome! Feel free to open issues or submit pull requests.
@@ -142,7 +97,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 **Etienne Dldc**
 
 - GitHub: [@etienne-dldc](https://github.com/etienne-dldc)
-- Website: [etienne.tech](https://dldc.dev)
 
 ## 🙏 Acknowledgments
 
