@@ -1,10 +1,10 @@
 import { Card } from "../components/Card.tsx";
-import { Layout } from "../components/Layout.tsx";
+import { DocumentationLayout } from "../components/DocumentationLayout.tsx";
 import { Link } from "../components/Link.tsx";
 
 export function Documentation() {
   return (
-    <Layout>
+    <DocumentationLayout>
       <Card>
         <div class="prose max-w-none">
           <h1 class="text-3xl font-bold text-gray-800 mb-6">Documentation</h1>
@@ -211,6 +211,6 @@ export function Documentation() {
           </div>
         </div>
       </Card>
-    </Layout>
+    </DocumentationLayout>
   );
 }
