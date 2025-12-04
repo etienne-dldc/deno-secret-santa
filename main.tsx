@@ -19,6 +19,7 @@ import { TProject, TUser } from "./logic/types.ts";
 import { AddUser } from "./views/AddUser.tsx";
 import { Admin } from "./views/Admin.tsx";
 import { ConfirmDraw } from "./views/ConfirmDraw.tsx";
+import { Documentation } from "./views/Documentation.tsx";
 import { Home } from "./views/Home.tsx";
 import { NotFound } from "./views/NotFound.tsx";
 import { ParticipantEdit } from "./views/ParticipantEdit.tsx";
@@ -30,6 +31,8 @@ const kv = await Deno.openKv();
 const app = new Hono();
 
 app.get("/", (c) => c.html(<Home />));
+
+app.get("/documentation", (c) => c.html(<Documentation />));
 
 app.post("/", sValidator("form", createProjectSchema), async (c) => {
   const { name, enablePassword, password } = c.req.valid("form");
