@@ -26,7 +26,7 @@ export function Layout(props: PropsWithChildren) {
             {props.children}
           </div>
           <footer class="self-end text-center text-white text-sm py-4">
-            Réalisé par <a href="https://dldc.dev" target="_blank" rel="noopener noreferrer" class="underline hover:text-gray-200">Etienne</a> - <a href="https://github.com/etienne-dldc/deno-secret-santa" target="_blank" rel="noopener noreferrer" class="underline hover:text-gray-200">Code source</a>
+            Réalisé par <a href="https://dldc.dev" target="_blank" rel="noopener noreferrer" class="underline hover:text-gray-200">Etienne</a> - <a href="https://github.com/etienne-dldc/deno-secret-santa" target="_blank" rel="noopener noreferrer" class="underline hover:text-gray-200">Code source</a> - <a href="/documentation" class="underline hover:text-gray-200">Documentation</a>
           </footer>
         </div>
       </body>
