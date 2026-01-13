@@ -57,6 +57,52 @@ export function Documentation() {
           </section>
 
           <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-3">🎬 Démo pour Amel</h2>
+            <p class="text-gray-700 mb-3">
+              Cette section fournit une démonstration du fonctionnement de l'application Secret Santa :
+            </p>
+
+            <h3 class="text-xl font-semibold text-gray-800 mt-4 mb-2">Démo rapide</h3>
+            <p class="text-gray-700 mb-3">
+              Pour voir l'application en action, suivez cet exemple de flux de travail :
+            </p>
+            <ol class="list-decimal list-inside space-y-2 ml-4 text-gray-700">
+              <li>
+                <strong>Créer un projet de test :</strong> Accédez à la page d'accueil et créez un projet nommé "Projet Démo". 
+                Définissez un mot de passe administrateur (par exemple "admin123").
+              </li>
+              <li>
+                <strong>Ajouter des participants de test :</strong> Ajoutez-vous comme premier participant, puis partagez le 
+                lien du projet avec des utilisateurs de test ou ajoutez plusieurs comptes de test. Chaque participant doit 
+                définir son propre mot de passe.
+              </li>
+              <li>
+                <strong>Configurer les contraintes (optionnel) :</strong> Utilisez le mot de passe administrateur pour accéder 
+                aux paramètres et ajouter des contraintes de tirage si nécessaire (par exemple, empêcher les couples de se tirer entre eux).
+              </li>
+              <li>
+                <strong>Effectuer le tirage :</strong> En tant qu'administrateur, lancez le tirage Secret Santa. Vérifiez que 
+                le tirage est terminé et verrouillé.
+              </li>
+              <li>
+                <strong>Voir les résultats :</strong> Chaque participant peut se connecter avec son mot de passe personnel pour 
+                voir en privé à qui il doit offrir un cadeau. Les résultats restent sécurisés et confidentiels.
+              </li>
+            </ol>
+
+            <h3 class="text-xl font-semibold text-gray-800 mt-4 mb-2">Conseils pour la démo</h3>
+            <ul class="list-disc list-inside space-y-2 ml-4 text-gray-700">
+              <li>Utilisez des données de test simples pour explorer toutes les fonctionnalités</li>
+              <li>Essayez différentes configurations de contraintes pour voir comment l'algorithme fonctionne</li>
+              <li>Testez les fonctionnalités de protection par mot de passe pour l'administrateur et les participants</li>
+              <li>Parcourez tout le flux de travail de la création à la révélation</li>
+            </ul>
+            <p class="text-gray-700 mt-3">
+              Cette démo met en valeur la simplicité et la conception axée sur la confidentialité de l'application Secret Santa !
+            </p>
+          </section>
+
+          <section class="mb-8">
             <h2 class="text-2xl font-semibold text-gray-800 mb-3">Pourquoi revenir sur le site ? Pourquoi pas d'email ?</h2>
             <p class="text-gray-700 mb-3">
               L'application a été conçue pour privilégier la <strong>simplicité technique</strong> et le <strong>respect 
