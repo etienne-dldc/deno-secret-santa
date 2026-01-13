@@ -24,6 +24,47 @@ A simple web application for organizing Secret Santa gift exchanges, built with 
     * Participants can return to the app's project page.
     * They enter the **Personal Password** they used during registration to privately view **who they are buying a gift for.**
 
+## 🎬 Demo for Amel
+
+This section provides a demonstration of the Secret Santa application workflow:
+
+### Quick Start Demo
+
+To see the application in action, follow this example workflow:
+
+1. **Create a Test Project:**
+   - Navigate to [https://🎅.etienne.tech](https://🎅.etienne.tech)
+   - Create a project named "Demo Project"
+   - Set an admin password (e.g., "admin123")
+
+2. **Add Sample Participants:**
+   - Add yourself as the first participant
+   - Share the project link with test users or add multiple test accounts
+   - Each participant should set their own password
+
+3. **Configure Constraints (Optional):**
+   - Use the admin password to access settings
+   - Add any drawing constraints if needed
+   - For example, prevent couples from drawing each other
+
+4. **Execute the Draw:**
+   - As admin, trigger the Secret Santa draw
+   - Verify the draw is complete and locked
+
+5. **View Results:**
+   - Each participant can log in with their personal password
+   - They'll see their assigned recipient privately
+   - Results remain secure and confidential
+
+### Demo Tips
+
+- Use simple test data to explore all features
+- Try different constraint configurations to see how the algorithm works
+- Test the password protection features for both admin and participants
+- Experience the full workflow from creation to reveal
+
+This demo showcases the simplicity and privacy-focused design of the Secret Santa application!
+
 ## Screenshots
 
 <table width="100%">
